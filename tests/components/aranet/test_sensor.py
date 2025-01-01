@@ -4,7 +4,11 @@ import pytest
 
 from homeassistant.components.aranet.const import DOMAIN
 from homeassistant.components.sensor import ATTR_STATE_CLASS
-from homeassistant.const import ATTR_FRIENDLY_NAME, ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import (
+    ATTR_DEVICE_CLASS,
+    ATTR_FRIENDLY_NAME,
+    ATTR_UNIT_OF_MEASUREMENT,
+)
 from homeassistant.core import HomeAssistant
 
 from . import (
@@ -213,12 +217,13 @@ async def test_sensors_aranetrn(hass: HomeAssistant) -> None:
     assert batt_sensor_attrs[ATTR_UNIT_OF_MEASUREMENT] == "%"
     assert batt_sensor_attrs[ATTR_STATE_CLASS] == "measurement"
 
-    co2_sensor = hass.states.get("sensor.aranetrn_12345_radon_concentration")
-    co2_sensor_attrs = co2_sensor.attributes
-    assert co2_sensor.state == "7"
-    assert co2_sensor_attrs[ATTR_FRIENDLY_NAME] == "AranetRn+ 12345 Radon Concentration"
-    assert co2_sensor_attrs[ATTR_UNIT_OF_MEASUREMENT] == "Bq/m³"
-    assert co2_sensor_attrs[ATTR_STATE_CLASS] == "measurement"
+    rn_sensor = hass.states.get("sensor.aranetrn_12345_radon_concentration")
+    rn_sensor_attrs = rn_sensor.attributes
+    assert rn_sensor.state == "7"
+    assert rn_sensor_attrs[ATTR_FRIENDLY_NAME] == "AranetRn+ 12345 Radon Concentration"
+    assert rn_sensor_attrs[ATTR_UNIT_OF_MEASUREMENT] == "Bq/m³"
+    assert rn_sensor_attrs[ATTR_STATE_CLASS] == "measurement"
+    assert rn_sensor_attrs[ATTR_DEVICE_CLASS] == "radioactivity_concentration"
 
     humid_sensor = hass.states.get("sensor.aranetrn_12345_humidity")
     humid_sensor_attrs = humid_sensor.attributes

@@ -28,6 +28,7 @@ from homeassistant.const import (
     PERCENTAGE,
     EntityCategory,
     UnitOfPressure,
+    UnitOfRadioactivityConcentration,
     UnitOfTemperature,
     UnitOfTime,
 )
@@ -102,8 +103,9 @@ SENSOR_DESCRIPTIONS = {
         key="radon_concentration",
         translation_key="radon_concentration",
         name="Radon Concentration",
-        native_unit_of_measurement="Bq/m³",
+        native_unit_of_measurement=UnitOfRadioactivityConcentration.BECQUERELS_PER_CUBIC_METER,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.RADIOACTIVITY_CONCENTRATION,
     ),
     "battery": AranetSensorEntityDescription(
         key="battery",
