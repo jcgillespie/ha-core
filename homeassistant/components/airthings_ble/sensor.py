@@ -20,6 +20,7 @@ from homeassistant.const import (
     EntityCategory,
     Platform,
     UnitOfPressure,
+    UnitOfRadioactivityConcentration,
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
@@ -34,7 +35,7 @@ from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
-from .const import DOMAIN, VOLUME_BECQUEREL, VOLUME_PICOCURIE
+from .const import DOMAIN
 from .coordinator import AirthingsBLEConfigEntry, AirthingsBLEDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -43,16 +44,18 @@ SENSORS_MAPPING_TEMPLATE: dict[str, SensorEntityDescription] = {
     "radon_1day_avg": SensorEntityDescription(
         key="radon_1day_avg",
         translation_key="radon_1day_avg",
-        native_unit_of_measurement=VOLUME_BECQUEREL,
+        native_unit_of_measurement=UnitOfRadioactivityConcentration.BECQUERELS_PER_CUBIC_METER,
         suggested_display_precision=0,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.RADIOACTIVITY_CONCENTRATION,
     ),
     "radon_longterm_avg": SensorEntityDescription(
         key="radon_longterm_avg",
         translation_key="radon_longterm_avg",
-        native_unit_of_measurement=VOLUME_BECQUEREL,
+        native_unit_of_measurement=UnitOfRadioactivityConcentration.BECQUERELS_PER_CUBIC_METER,
         suggested_display_precision=0,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.RADIOACTIVITY_CONCENTRATION,
     ),
     "radon_1day_level": SensorEntityDescription(
         key="radon_1day_level",
@@ -157,11 +160,14 @@ async def async_setup_entry(
     sensors_mapping = SENSORS_MAPPING_TEMPLATE.copy()
     if not is_metric:
         for key, val in sensors_mapping.items():
-            if val.native_unit_of_measurement is not VOLUME_BECQUEREL:
+            if (
+                val.native_unit_of_measurement
+                is not UnitOfRadioactivityConcentration.BECQUERELS_PER_CUBIC_METER
+            ):
                 continue
             sensors_mapping[key] = dataclasses.replace(
                 val,
-                native_unit_of_measurement=VOLUME_PICOCURIE,
+                native_unit_of_measurement=UnitOfRadioactivityConcentration.PICOCURIES_PER_LITER,
                 suggested_display_precision=1,
             )
 
