@@ -20,6 +20,7 @@ from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
     PERCENTAGE,
     UnitOfPressure,
+    UnitOfRadioactivityConcentration,
     UnitOfSoundPressure,
     UnitOfTemperature,
 )
@@ -28,10 +29,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import AirQConfigEntry, AirQCoordinator
-from .const import (
-    ACTIVITY_BECQUEREL_PER_CUBIC_METER,
-    CONCENTRATION_GRAMS_PER_CUBIC_METER,
-)
+from .const import CONCENTRATION_GRAMS_PER_CUBIC_METER
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -360,9 +358,10 @@ SENSOR_TYPES: list[AirQEntityDescription] = [
     AirQEntityDescription(
         key="radon",
         translation_key="radon",
-        native_unit_of_measurement=ACTIVITY_BECQUEREL_PER_CUBIC_METER,
+        native_unit_of_measurement=UnitOfRadioactivityConcentration.BECQUERELS_PER_CUBIC_METER,
         state_class=SensorStateClass.MEASUREMENT,
         value=lambda data: data.get("radon"),
+        device_class=SensorDeviceClass.RADIOACTIVITY_CONCENTRATION,
     ),
     AirQEntityDescription(
         key="temperature",
